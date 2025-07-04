@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Game Currency Converter</title>
   <style>
     body {
@@ -42,19 +42,35 @@
 
   <h1>Game Currency Converter</h1>
 
-  <input type="number" id="amount" placeholder="Enter amount">
+  <input type="number" id="amount" placeholder="Enter amount" />
 
   <select id="fromCurrency">
+    <!-- Game currencies -->
     <option value="vbucks">V-Bucks (Fortnite)</option>
     <option value="riot">Valorant Points</option>
     <option value="cod">COD Points</option>
+    <option value="wowgold">WoW Gold</option>
+    <option value="robux">Robux (Roblox)</option>
+
+    <!-- Real-world currencies -->
+    <option value="usd">USD ($)</option>
+    <option value="eur">EUR (€)</option>
+    <option value="gbp">GBP (£)</option>
+    <option value="jpy">JPY (¥)</option>
   </select>
 
   <select id="toCurrency">
-    <option value="usd">USD ($)</option>
+    <!-- Same options as fromCurrency -->
     <option value="vbucks">V-Bucks (Fortnite)</option>
     <option value="riot">Valorant Points</option>
     <option value="cod">COD Points</option>
+    <option value="wowgold">WoW Gold</option>
+    <option value="robux">Robux (Roblox)</option>
+
+    <option value="usd">USD ($)</option>
+    <option value="eur">EUR (€)</option>
+    <option value="gbp">GBP (£)</option>
+    <option value="jpy">JPY (¥)</option>
   </select>
 
   <button onclick="convertCurrency()">Convert</button>
@@ -62,10 +78,18 @@
   <div id="result"></div>
 
   <script>
+    // Conversion rates to USD for all currencies
+    // Game currencies are approximated with example rates
     const ratesToUSD = {
-      vbucks: 1000 / 7.99,     // 1000 V-Bucks = $7.99
-      riot: 1050 / 9.99,       // 1050 VP = $9.99
-      cod: 1100 / 9.99         // 1100 COD Points = $9.99
+      vbucks: 7.99 / 1000,      // 1000 V-Bucks = $7.99 => 1 V-Buck = 0.00799 USD
+      riot: 9.99 / 1050,        // 1050 Valorant Points = $9.99
+      cod: 9.99 / 1100,         // 1100 COD Points = $9.99
+      wowgold: 0.0001,          // Example: 1 WoW Gold = $0.0001 (adjust as needed)
+      robux: 0.0125,            // 1 Robux ≈ $0.0125 (example)
+      usd: 1,                   // USD is base
+      eur: 1.1,                 // 1 EUR = 1.1 USD (example)
+      gbp: 1.3,                 // 1 GBP = 1.3 USD (example)
+      jpy: 0.0073               // 1 JPY = 0.0073 USD (example)
     };
 
     function convertCurrency() {
@@ -78,23 +102,11 @@
         return;
       }
 
-      let usd;
+      // Convert from "from" currency to USD first
+      const usdAmount = amount * ratesToUSD[from];
 
-      // Convert to USD first
-      if (from === 'usd') {
-        usd = amount;
-      } else {
-        usd = amount / ratesToUSD[from];
-      }
-
-      // Then convert from USD to target
-      let finalAmount;
-
-      if (to === 'usd') {
-        finalAmount = usd;
-      } else {
-        finalAmount = usd * ratesToUSD[to];
-      }
+      // Convert from USD to target currency
+      const finalAmount = usdAmount / ratesToUSD[to];
 
       document.getElementById('result').innerText = `≈ ${finalAmount.toFixed(2)} ${to.toUpperCase()}`;
     }
@@ -102,13 +114,3 @@
 
 </body>
 </html>
-<select id="gameCurrency">
-  <option value="gold">Gold</option>
-  <option value="coins">Coins</option>
-</select>
-
-<select id="realCurrency">
-  <option value="usd">USD</option>
-  <option value="eur">EUR</option>
-</select>
-
