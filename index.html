@@ -131,6 +131,7 @@
 
   <input type="number" id="amount" placeholder="Enter amount" />
 
+  <!-- Top dropdown: all currencies -->
   <select id="fromCurrency">
     <!-- Game currencies -->
     <option value="vbucks">V-Bucks (Fortnite)</option>
@@ -138,27 +139,51 @@
     <option value="cod">COD Points</option>
     <option value="wowgold">WoW Gold</option>
     <option value="robux">Robux (Roblox)</option>
+    <option value="csgo">CS:GO Keys</option>
+    <option value="minecraft">Minecraft Coins</option>
+    <option value="genshin">Genshin Primogems</option>
 
     <!-- Real-world currencies -->
     <option value="usd">USD ($)</option>
     <option value="eur">EUR (€)</option>
     <option value="gbp">GBP (£)</option>
     <option value="jpy">JPY (¥)</option>
+    <option value="aud">AUD (A$)</option>
+    <option value="cad">CAD (C$)</option>
+    <option value="chf">CHF (Fr.)</option>
+    <option value="cny">CNY (¥)</option>
   </select>
 
-  <select id="toCurrency">
-    <!-- Same options as fromCurrency -->
-    <option value="vbucks">V-Bucks (Fortnite)</option>
-    <option value="riot">Valorant Points</option>
-    <option value="cod">COD Points</option>
-    <option value="wowgold">WoW Gold</option>
-    <option value="robux">Robux (Roblox)</option>
+  <!-- Bottom two dropdowns container -->
+  <div style="display: flex; gap: 10px; margin-top: 15px;">
 
-    <option value="usd">USD ($)</option>
-    <option value="eur">EUR (€)</option>
-    <option value="gbp">GBP (£)</option>
-    <option value="jpy">JPY (¥)</option>
-  </select>
+    <!-- Bottom left dropdown: real currencies only -->
+    <select id="toRealCurrency" style="flex: 1;">
+      <option value="usd">USD ($)</option>
+      <option value="eur">EUR (€)</option>
+      <option value="gbp">GBP (£)</option>
+      <option value="jpy">JPY (¥)</option>
+      <option value="aud">AUD (A$)</option>
+      <option value="cad">CAD (C$)</option>
+      <option value="chf">CHF (Fr.)</option>
+      <option value="cny">CNY (¥)</option>
+      <option value="inr">INR (₹)</option>
+      <option value="sek">SEK (kr)</option>
+    </select>
+
+    <!-- Bottom right dropdown: game currencies only -->
+    <select id="toGameCurrency" style="flex: 1;">
+      <option value="vbucks">V-Bucks (Fortnite)</option>
+      <option value="riot">Valorant Points</option>
+      <option value="cod">COD Points</option>
+      <option value="wowgold">WoW Gold</option>
+      <option value="robux">Robux (Roblox)</option>
+      <option value="csgo">CS:GO Keys</option>
+      <option value="minecraft">Minecraft Coins</option>
+      <option value="genshin">Genshin Primogems</option>
+    </select>
+
+  </div>
 
   <button onclick="convertCurrency()">Convert</button>
 
@@ -166,36 +191,53 @@
 
   <script>
     // Conversion rates to USD for all currencies
-    // Game currencies are approximated with example rates
+    // Game currencies approximated with example rates
     const ratesToUSD = {
-      vbucks: 7.99 / 1000,
+      // Game currencies
+      vbucks: 7.99 / 1000,           // 1 V-Buck = $0.00799
       riot: 9.99 / 1050,
       cod: 9.99 / 1100,
       wowgold: 0.0001,
       robux: 0.0125,
+      csgo: 2.50,                   // 1 CS:GO Key ≈ $2.50 (example)
+      minecraft: 0.005,             // 1 Minecraft Coin ≈ $0.005 (example)
+      genshin: 0.02,               // 1 Primogem ≈ $0.02 (example)
+
+      // Real currencies
       usd: 1,
       eur: 1.1,
       gbp: 1.3,
-      jpy: 0.0073
+      jpy: 0.0073,
+      aud: 0.7,
+      cad: 0.75,
+      chf: 1.05,
+      cny: 0.14,
+      inr: 0.012,
+      sek: 0.1
     };
 
     function convertCurrency() {
       const amount = parseFloat(document.getElementById('amount').value);
       const from = document.getElementById('fromCurrency').value;
-      const to = document.getElementById('toCurrency').value;
+      const toReal = document.getElementById('toRealCurrency').value;
+      const toGame = document.getElementById('toGameCurrency').value;
 
       if (isNaN(amount) || amount <= 0) {
         document.getElementById('result').innerText = "Please enter a valid amount.";
         return;
       }
 
-      // Convert from "from" currency to USD first
+      // Convert from "from" currency to USD
       const usdAmount = amount * ratesToUSD[from];
 
-      // Convert from USD to target currency
-      const finalAmount = usdAmount / ratesToUSD[to];
+      // Convert from USD to each target currency
+      const finalReal = usdAmount / ratesToUSD[toReal];
+      const finalGame = usdAmount / ratesToUSD[toGame];
 
-      document.getElementById('result').innerText = `≈ ${finalAmount.toFixed(2)} ${to.toUpperCase()}`;
+      // Show results for both real and game currencies
+      document.getElementById('result').innerHTML =
+        `≈ ${finalReal.toFixed(2)} ${toReal.toUpperCase()}<br>` +
+        `≈ ${finalGame.toFixed(2)} ${toGame.toUpperCase()}`;
     }
   </script>
 
